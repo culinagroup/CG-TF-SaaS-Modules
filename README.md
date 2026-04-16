@@ -6,7 +6,7 @@ Module repos pin a specific tag:
 
 ```hcl
 module "app" {
-  source = "git::https://github.com/IntDataGuy/tf-saas-modules.git//module-app?ref=v0.1.0"
+  source = "git::https://github.com/BlackRifleCoE/tf-saas-modules.git//module-app?ref=v0.1.0"
   # …
 }
 ```
