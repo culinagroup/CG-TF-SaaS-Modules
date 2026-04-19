@@ -8,10 +8,11 @@ locals {
     component   = "module"
   })
 
-  # Non-sensitive set used purely as the `for_each` iterator. The sensitive
-  # value itself is referenced inside `content {}` — Terraform won't accept
-  # a sensitive value as a for_each key.
-  app_insights_env = var.application_insights_connection_string != null ? toset(["enabled"]) : toset([])
+  # Whether to attach the App Insights env block. We wrap the null-check in
+  # `nonsensitive()` because deriving anything from the sensitive var taints
+  # it as sensitive — and Terraform rejects sensitive values in for_each.
+  # The boolean (is it null or not) doesn't leak the secret itself.
+  app_insights_env = nonsensitive(var.application_insights_connection_string != null) ? toset(["enabled"]) : toset([])
 }
 
 resource "azurerm_key_vault_secret" "extra" {
