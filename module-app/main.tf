@@ -8,11 +8,10 @@ locals {
     component   = "module"
   })
 
-  # Keyed by env-var name so `for_each` is happy (it requires a map or set,
-  # not a list of objects).
-  app_insights_env = var.application_insights_connection_string != null ? {
-    APPLICATIONINSIGHTS_CONNECTION_STRING = var.application_insights_connection_string
-  } : {}
+  # Non-sensitive set used purely as the `for_each` iterator. The sensitive
+  # value itself is referenced inside `content {}` — Terraform won't accept
+  # a sensitive value as a for_each key.
+  app_insights_env = var.application_insights_connection_string != null ? toset(["enabled"]) : toset([])
 }
 
 resource "azurerm_key_vault_secret" "extra" {
@@ -99,8 +98,8 @@ resource "azurerm_container_app" "module" {
       dynamic "env" {
         for_each = local.app_insights_env
         content {
-          name  = env.key
-          value = env.value
+          name  = "APPLICATIONINSIGHTS_CONNECTION_STRING"
+          value = var.application_insights_connection_string
         }
       }
 
