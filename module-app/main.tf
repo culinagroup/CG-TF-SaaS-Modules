@@ -8,12 +8,11 @@ locals {
     component   = "module"
   })
 
-  app_insights_env = var.application_insights_connection_string != null ? [
-    {
-      name  = "APPLICATIONINSIGHTS_CONNECTION_STRING"
-      value = var.application_insights_connection_string
-    }
-  ] : []
+  # Keyed by env-var name so `for_each` is happy (it requires a map or set,
+  # not a list of objects).
+  app_insights_env = var.application_insights_connection_string != null ? {
+    APPLICATIONINSIGHTS_CONNECTION_STRING = var.application_insights_connection_string
+  } : {}
 }
 
 resource "azurerm_key_vault_secret" "extra" {
@@ -100,16 +99,16 @@ resource "azurerm_container_app" "module" {
       dynamic "env" {
         for_each = local.app_insights_env
         content {
-          name  = env.value.name
-          value = env.value.value
+          name  = env.key
+          value = env.value
         }
       }
 
       dynamic "env" {
-        for_each = var.extra_env_vars
+        for_each = { for v in var.extra_env_vars : v.name => v.value }
         content {
-          name  = env.value.name
-          value = env.value.value
+          name  = env.key
+          value = env.value
         }
       }
 
