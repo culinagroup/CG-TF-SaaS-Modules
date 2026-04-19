@@ -1,7 +1,13 @@
 locals {
   app_name      = coalesce(var.app_name_override, "ca-saas-mod-${var.module_code}-${var.environment}")
   secret_prefix = "saas-mod-${replace(var.module_code, "-", "")}-"
-  image         = var.image != "" ? var.image : "${var.container_registry_login_server}/saas-module-${var.module_code}:init"
+  # On a fresh ACR, the per-module image hasn't been pushed yet, so the `:init`
+  # tag doesn't resolve and Container Apps fails revision provisioning with
+  # MANIFEST_UNKNOWN. Fall back to a public placeholder; the lifecycle block
+  # on the container app ignores image changes, so deploy.yml's
+  # `az containerapp update --image ...` won't be reverted by a later apply.
+  placeholder_image = "mcr.microsoft.com/k8se/quickstart:latest"
+  image             = var.image != "" ? var.image : local.placeholder_image
 
   base_tags = merge(var.tags, {
     module_code = var.module_code
