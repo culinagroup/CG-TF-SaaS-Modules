@@ -159,6 +159,10 @@ resource "azurerm_container_app" "module" {
   lifecycle {
     ignore_changes = [
       template[0].container[0].image,
+      # Azure auto-sets workload_profile_name = "Consumption" after create;
+      # config doesn't specify it, so terraform would null it back on every
+      # apply. Consumption is the default mode anyway — silence the drift.
+      workload_profile_name,
     ]
   }
 }
