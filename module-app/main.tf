@@ -22,6 +22,7 @@ locals {
 }
 
 resource "azurerm_key_vault_secret" "extra" {
+  provider     = azurerm.kv_writer
   for_each     = toset(var.extra_secrets)
   name         = "${local.secret_prefix}${each.value}"
   value        = "placeholder-set-out-of-band"
