@@ -17,6 +17,7 @@ locals {
 # until we add a Postgres provider here (blocked on Terraform reaching the
 # private VNet from CI runners).
 resource "azurerm_key_vault_secret" "database_url" {
+  provider     = azurerm.kv_writer
   name         = "${local.secret_prefix}database-url"
   value        = var.connection_string
   key_vault_id = var.key_vault_id
