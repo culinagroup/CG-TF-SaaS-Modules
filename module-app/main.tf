@@ -10,8 +10,8 @@ locals {
   image             = var.image != "" ? var.image : local.placeholder_image
 
   base_tags = merge(var.tags, {
-    module_code = var.module_code
-    component   = "module"
+    ModuleCode = var.module_code
+    Component  = "module"
   })
 
   # Whether to attach the App Insights env block. We wrap the null-check in

@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.2.0
+
+Culina-maintained fork (`culinagroup/CG-TF-SaaS-Modules`) — consumers should pin this repo/tag
+rather than the upstream `agentic-saas-developments/tf-saas-modules`.
+
+### Tagging (Culina naming & tagging standard)
+- Supplementary tag keys emitted by `module-app` and `module-schema` renamed to PascalCase for a
+  consistent tag schema: `module_code` → `ModuleCode`, `component` → `Component`.
+- No other behaviour change. Every taggable resource continues to apply the caller's `tags` map via
+  `merge(var.tags, …)`, so passing the platform's full Culina tag set makes module resources
+  compliant with no module-side changes. `module-storage` has no taggable resources (storage
+  containers and role assignments do not support tags).
+- Naming unchanged: `ca-saas-mod-<code>-<env>` (CAF-structured); region is carried in the
+  `Location` tag, not the name.
+
 ## v0.1.0 (unreleased)
 
 Initial extraction from `geofence/terraform/modules/`.
