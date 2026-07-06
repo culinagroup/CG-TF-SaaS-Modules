@@ -3,8 +3,8 @@ locals {
   schema_name   = coalesce(var.schema_name, "module_${replace(var.module_code, "-", "_")}")
 
   base_tags = merge(var.tags, {
-    module_code = var.module_code
-    component   = "module-schema"
+    ModuleCode = var.module_code
+    Component  = "module-schema"
   })
 }
 
